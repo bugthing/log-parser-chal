@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+
+require_relative '../config/setup'
+
+require 'yaml'
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: parse-email -f ./file.log"
+  opts.on('-f', '--log FILE', 'File containing logs') { |v| options[:log_file] = v }
+end.parse!
+
+fail OptionParser::MissingArgument unless options[:log_file]
+fail OptionParser::MissingArgument unless File.readable?(options[:log_file])
+
+parser = LogParser.new(log_file: options[:log_file])
