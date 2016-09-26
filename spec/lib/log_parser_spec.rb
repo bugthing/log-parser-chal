@@ -13,7 +13,15 @@ describe LogParser do
     let(:log_file_path) { './spec/fixtures/webserver.log' }
 
     it 'contructs the parser' do
-      expect{ parser }.not_to raise_error
+      expect { parser }.not_to raise_error
+    end
+
+    it 'is enumerable' do
+      expect(parser).to respond_to :each
+    end
+
+    it 'yields a parsed line' do
+      expect(parser.first).to have_attributes(page: '/help_page/1', ip: '126.318.035.038')
     end
   end
 end

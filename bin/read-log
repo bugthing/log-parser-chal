@@ -6,11 +6,23 @@ require 'yaml'
 
 options = {}
 OptionParser.new do |opts|
-  opts.banner = "Usage: parse-email -f ./file.log"
+  opts.banner = 'Usage: parse-email -f ./file.log'
   opts.on('-f', '--log FILE', 'File containing logs') { |v| options[:log_file] = v }
 end.parse!
 
-fail OptionParser::MissingArgument unless options[:log_file]
-fail OptionParser::MissingArgument unless File.readable?(options[:log_file])
+raise OptionParser::MissingArgument unless options[:log_file]
+raise OptionParser::MissingArgument unless File.readable?(options[:log_file])
 
 parser = LogParser.new(log_file: options[:log_file])
+
+stats = StatsCollector.new log: parser
+
+puts '---Most views---'
+stats.by_views.each do |stat|
+  puts "  #{stat.path} - #{stat.views}"
+end
+
+puts '---Most non-unique viewes---'
+stats.by_u_views.each do |stat|
+  puts "  #{stat.path} - #{stat.u_views}"
+end
